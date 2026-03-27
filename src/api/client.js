@@ -28,9 +28,10 @@ const createApiClient = ({ baseUrl, bearerToken, proxy, onTokenExpired }) => {
 
   // Set up proxy if configured
   if (proxy?.host && proxy?.port) {
-    let proxyUrl = `socks5://${proxy.host}:${proxy.port}`;
+    // socks-proxy-agent v8+ requires socks:// instead of socks5://
+    let proxyUrl = `socks://${proxy.host}:${proxy.port}`;
     if (proxy.user && proxy.pass) {
-      proxyUrl = `socks5://${proxy.user}:${proxy.pass}@${proxy.host}:${proxy.port}`;
+      proxyUrl = `socks://${encodeURIComponent(proxy.user)}:${encodeURIComponent(proxy.pass)}@${proxy.host}:${proxy.port}`;
     }
     const agent = new SocksProxyAgent(proxyUrl);
     instance.defaults.httpAgent = agent;
