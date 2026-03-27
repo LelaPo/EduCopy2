@@ -28,7 +28,8 @@ FROM node:20-alpine AS production
 WORKDIR /app
 
 # Install runtime dependencies for native modules (better-sqlite3)
-RUN apk add --no-cache libc6-compat
+# Install su-exec for running as non-root user after setting permissions
+RUN apk add --no-cache libc6-compat su-exec
 
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
@@ -51,8 +52,8 @@ RUN mkdir -p /app/data && chmod 755 /app/data
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Switch to non-root user
-USER nodejs
+# Note: USER nodejs removed - entrypoint script handles user switch with su-exec
+# This allows the script to run as root, fix permissions, then switch to nodejs
 
 # Expose nothing (bot uses long polling)
 # EXPOSE 3000
