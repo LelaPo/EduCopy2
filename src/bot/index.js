@@ -21,14 +21,11 @@ import createScheduleHandlers from './handlers/schedule.js';
 const createBot = ({ config, models, apiClient, logger }) => {
   const { bot: botConfig, proxy, admin } = config;
 
-  // Create Telegraf instance with optional proxy
-  const telegrafOptions = {
+  // Configure proxy for Telegram requests if specified
+  let telegrafOptions = {
     handlerTimeout: 30,
   };
 
-  const bot = new Telegraf(botConfig.token, telegrafOptions);
-
-  // Configure proxy for Telegram requests if specified
   if (proxy?.host && proxy?.port) {
     let proxyUrl = `socks5://${proxy.host}:${proxy.port}`;
     if (proxy.user && proxy.pass) {
@@ -36,10 +33,14 @@ const createBot = ({ config, models, apiClient, logger }) => {
     }
     logger.info({ host: proxy.host, port: proxy.port }, 'Using SOCKS5 proxy for Telegram');
     const agent = new SocksProxyAgent(proxyUrl);
-    // Telegraf v4 uses node-fetch - set agent in request options
-    bot.telegram.request.agent = agent;
-    bot.telegram.request.timeout = 60000;
+    // Telegraf v4: pass agent in telegram options
+    telegrafOptions.telegram = {
+      agent,
+      timeout: 60000,
+    };
   }
+
+  const bot = new Telegraf(botConfig.token, telegrafOptions);
 
   // Create middleware
   const loggingMiddleware = createLoggingMiddleware(logger);
