@@ -1,4 +1,4 @@
-import { Telegraf } from 'telegraf';
+import Telegraf from 'telegraf';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import createLoggingMiddleware from './middleware/logging.js';
 import createAuthMiddleware from './middleware/auth.js';

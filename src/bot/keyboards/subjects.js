@@ -1,4 +1,5 @@
-import { InlineKeyboard } from 'telegraf';
+import Telegraf from 'telegraf';
+const { InlineKeyboard } = Telegraf;
 
 /**
  * Creates a keyboard with subject quick filters
