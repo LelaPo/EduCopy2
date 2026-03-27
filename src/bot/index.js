@@ -1,4 +1,6 @@
-import Telegraf from 'telegraf';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { Telegraf } = require('telegraf');
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import createLoggingMiddleware from './middleware/logging.js';
 import createAuthMiddleware from './middleware/auth.js';

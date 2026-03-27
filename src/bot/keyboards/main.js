@@ -1,5 +1,6 @@
-import Telegraf from 'telegraf';
-const { InlineKeyboard } = Telegraf;
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { InlineKeyboard } = require('telegraf');
 
 /**
  * Creates the main menu keyboard
