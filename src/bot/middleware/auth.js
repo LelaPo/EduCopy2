@@ -24,41 +24,46 @@ const createAuthMiddleware = (models, adminId) => {
       return next();
     }
 
-    // Check if user exists and has access
-    const user = User.findById(telegramId);
+    try {
+      // Check if user exists and has access
+      const user = User.findById(telegramId);
 
-    if (!user) {
-      // Register new user without access
+      if (!user) {
+        // Register new user without access
+        User.createOrUpdate(telegramId, {
+          username: ctx.from.username,
+          first_name: ctx.from.first_name,
+          last_name: ctx.from.last_name,
+        });
+        return ctx.reply(
+          '🔐 <b>Access Required</b>\n\n' +
+            'This bot requires an access key to use. ' +
+            'Please enter your access key to continue.',
+          { parse_mode: 'HTML' }
+        );
+      }
+
+      if (!user.has_access) {
+        return ctx.reply(
+          '⛔ <b>Access Denied</b>\n\n' +
+            'Your access key has not been validated yet. ' +
+            'Please enter a valid access key to continue.',
+          { parse_mode: 'HTML' }
+        );
+      }
+
+      // Update user info
       User.createOrUpdate(telegramId, {
         username: ctx.from.username,
         first_name: ctx.from.first_name,
         last_name: ctx.from.last_name,
       });
-      return ctx.reply(
-        '🔐 <b>Access Required</b>\n\n' +
-          'This bot requires an access key to use. ' +
-          'Please enter your access key to continue.',
-        { parse_mode: 'HTML' }
-      );
+
+      return next();
+    } catch (error) {
+      // Re-throw to be caught by bot.catch
+      throw new Error(`Database error in authMiddleware: ${error.message}`);
     }
-
-    if (!user.has_access) {
-      return ctx.reply(
-        '⛔ <b>Access Denied</b>\n\n' +
-          'Your access key has not been validated yet. ' +
-          'Please enter a valid access key to continue.',
-        { parse_mode: 'HTML' }
-      );
-    }
-
-    // Update user info
-    User.createOrUpdate(telegramId, {
-      username: ctx.from.username,
-      first_name: ctx.from.first_name,
-      last_name: ctx.from.last_name,
-    });
-
-    return next();
   };
 
   /**

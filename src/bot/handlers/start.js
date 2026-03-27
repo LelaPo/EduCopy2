@@ -18,26 +18,31 @@ const createStartHandler = (models, adminId) => {
 
     if (!telegramId) return;
 
-    // Register or update user
-    const user = User.createOrUpdate(telegramId, {
-      username: ctx.from.username,
-      first_name: ctx.from.first_name,
-      last_name: ctx.from.last_name,
-    });
+    try {
+      // Register or update user
+      const user = User.createOrUpdate(telegramId, {
+        username: ctx.from.username,
+        first_name: ctx.from.first_name,
+        last_name: ctx.from.last_name,
+      });
 
-    const isAdmin = telegramId === adminId;
-    const hasAccess = user?.has_access || isAdmin;
+      const isAdmin = telegramId === adminId;
+      const hasAccess = user?.has_access || isAdmin;
 
-    const welcomeMessage = isAdmin
-      ? `👋 <b>Welcome, Admin!</b>\n\nYou have full access to all features.`
-      : hasAccess
-      ? `👋 <b>Welcome!</b>\n\nYour access is confirmed. You can now use all features.`
-      : `👋 <b>Welcome!</b>\n\n⚠️ You need an access key to use this bot. Use /key command to enter your key.`;
+      const welcomeMessage = isAdmin
+        ? `👋 <b>Welcome, Admin!</b>\n\nYou have full access to all features.`
+        : hasAccess
+        ? `👋 <b>Welcome!</b>\n\nYour access is confirmed. You can now use all features.`
+        : `👋 <b>Welcome!</b>\n\n⚠️ You need an access key to use this bot. Use /key command to enter your key.`;
 
-    await ctx.reply(welcomeMessage, {
-      parse_mode: 'HTML',
-      reply_markup: createMainMenu().reply_markup,
-    });
+      await ctx.reply(welcomeMessage, {
+        parse_mode: 'HTML',
+        reply_markup: createMainMenu().reply_markup,
+      });
+    } catch (error) {
+      // Re-throw to be caught by bot.catch
+      throw new Error(`Database error in startHandler: ${error.message}`);
+    }
   };
 
   /**

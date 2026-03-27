@@ -64,8 +64,20 @@ const createBot = ({ config, models, apiClient, logger }) => {
   );
 
   // Global error handler
-  bot.catch((error, ctx) => {
-    logger.error({ error, ctx }, 'Bot error');
+  bot.catch((ctx, error) => {
+    // Telegraf passes (ctx, error) not (error, ctx)
+    const err = error || ctx?.error;
+    logger.error(
+      {
+        error_message: err?.message || 'Unknown error',
+        error_stack: err?.stack || 'No stack trace',
+        telegram_id: ctx?.from?.id,
+        username: ctx?.from?.username,
+        chat_id: ctx?.chat?.id,
+        update_type: ctx?.updateType,
+      },
+      'Bot error'
+    );
     if (ctx?.reply) {
       ctx.reply('❌ An error occurred. Please try again later.');
     }

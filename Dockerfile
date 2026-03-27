@@ -44,8 +44,12 @@ RUN npm ci --omit=dev && \
 # Copy built application from builder stage
 COPY --from=builder /app/src ./src
 
-# Create data directory for database
-RUN mkdir -p /app/data && chown -R nodejs:nodejs /app
+# Create data directory for database with correct permissions
+RUN mkdir -p /app/data && chmod 755 /app/data
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Switch to non-root user
 USER nodejs
@@ -61,4 +65,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 STOPSIGNAL SIGTERM
 
 # Start the application
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "src/index.js"]
