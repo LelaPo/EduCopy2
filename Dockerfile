@@ -44,14 +44,11 @@ RUN npm ci --omit=dev && \
 # Copy built application from builder stage
 COPY --from=builder /app/src ./src
 
-# Set ownership to non-root user
-RUN chown -R nodejs:nodejs /app
+# Create data directory for database
+RUN mkdir -p /app/data && chown -R nodejs:nodejs /app
 
 # Switch to non-root user
 USER nodejs
-
-# Create data directory for database
-RUN mkdir -p /app/data && chown nodejs:nodejs /app/data
 
 # Expose nothing (bot uses long polling)
 # EXPOSE 3000
