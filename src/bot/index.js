@@ -36,10 +36,8 @@ const createBot = ({ config, models, apiClient, logger }) => {
     }
     logger.info({ host: proxy.host, port: proxy.port }, 'Using SOCKS5 proxy for Telegram');
     const agent = new SocksProxyAgent(proxyUrl);
-    bot.telegram.options.request = {
-      agent,
-      timeout: 30000,
-    };
+    // Telegraf v4 uses node-fetch - set agent directly
+    bot.telegram.request = { agent, timeout: 60000 };
   }
 
   // Create middleware
