@@ -26,18 +26,18 @@ const createBot = ({ config, models, apiClient, logger }) => {
     handlerTimeout: 30,
   };
 
+  const bot = new Telegraf(botConfig.token, telegrafOptions);
+
   // Configure proxy for Telegram requests if specified
   if (proxy?.host && proxy?.port) {
     let proxyUrl = `socks5://${proxy.host}:${proxy.port}`;
     if (proxy.user && proxy.pass) {
       proxyUrl = `socks5://${proxy.user}:${proxy.pass}@${proxy.host}:${proxy.port}`;
     }
+    logger.info({ proxy: proxyUrl }, 'Using SOCKS5 proxy for Telegram');
     const agent = new SocksProxyAgent(proxyUrl);
-    telegrafOptions.agent = agent;
-    telegrafOptions.telegramAgent = agent;
+    bot.telegram.requestAgent = agent;
   }
-
-  const bot = new Telegraf(botConfig.token, telegrafOptions);
 
   // Create middleware
   const loggingMiddleware = createLoggingMiddleware(logger);

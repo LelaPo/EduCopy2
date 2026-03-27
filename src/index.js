@@ -46,6 +46,8 @@ const main = async () => {
 
     // Initialize and start bot
     bot = createBot({ config, models, apiClient, logger });
+    logger.info('Bot instance created, attempting to connect to Telegram...');
+    console.log('🔍 Connecting to Telegram...');
 
     // Graceful shutdown handlers
     const shutdown = async (signal) => {
@@ -88,7 +90,10 @@ const main = async () => {
     });
 
     // Start the bot
+    console.log('📡 Calling getMe()...');
+    logger.info('Calling bot.telegram.getMe()');
     const botInfo = await bot.telegram.getMe();
+    console.log('✅ Got bot info:', botInfo.username);
     bot.botInfo = botInfo;
     logger.info({ username: botInfo.username }, 'Bot authenticated with Telegram');
 
