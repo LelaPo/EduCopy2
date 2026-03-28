@@ -26,34 +26,36 @@ const createAuthMiddleware = (models, adminId) => {
 
     try {
       // Check if user exists and has access
-      const user = User.findById(telegramId);
+      const user = await User.findById(telegramId);
 
       if (!user) {
         // Register new user without access
-        User.createOrUpdate(telegramId, {
+        await User.createOrUpdate(telegramId, {
           username: ctx.from.username,
           first_name: ctx.from.first_name,
           last_name: ctx.from.last_name,
         });
-        return ctx.reply(
+        await ctx.reply(
           '🔐 <b>Access Required</b>\n\n' +
             'This bot requires an access key to use. ' +
             'Please enter your access key to continue.',
           { parse_mode: 'HTML' }
         );
+        return;
       }
 
       if (!user.has_access) {
-        return ctx.reply(
+        await ctx.reply(
           '⛔ <b>Access Denied</b>\n\n' +
             'Your access key has not been validated yet. ' +
             'Please enter a valid access key to continue.',
           { parse_mode: 'HTML' }
         );
+        return;
       }
 
       // Update user info
-      User.createOrUpdate(telegramId, {
+      await User.createOrUpdate(telegramId, {
         username: ctx.from.username,
         first_name: ctx.from.first_name,
         last_name: ctx.from.last_name,

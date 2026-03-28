@@ -20,7 +20,7 @@ const createStartHandler = (models, adminId) => {
 
     try {
       // Register or update user
-      const user = User.createOrUpdate(telegramId, {
+      const user = await User.createOrUpdate(telegramId, {
         username: ctx.from.username,
         first_name: ctx.from.first_name,
         last_name: ctx.from.last_name,

@@ -50,7 +50,7 @@ const createAccessHandler = (models) => {
     }
 
     // Try to validate and use the key
-    const keyData = AccessKey.validateAndUse(messageText.toUpperCase(), telegramId);
+    const keyData = await AccessKey.validateAndUse(messageText.toUpperCase(), telegramId);
 
     if (!keyData) {
       await ctx.reply(
@@ -64,7 +64,7 @@ const createAccessHandler = (models) => {
     }
 
     // Grant access to user
-    User.grantAccess(telegramId);
+    await User.grantAccess(telegramId);
 
     ctx.session.waitingForKey = false;
 

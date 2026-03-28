@@ -28,7 +28,7 @@ const createUserModel = (db) => {
      * @param {number} telegramId - Telegram user ID
      * @returns {Object|null} User object or null
      */
-    findById(telegramId) {
+    async findById(telegramId) {
       return findById.get(telegramId);
     },
 
@@ -38,7 +38,7 @@ const createUserModel = (db) => {
      * @param {Object} info - User info (username, first_name, last_name)
      * @returns {Object} Created/updated user
      */
-    createOrUpdate(telegramId, info = {}) {
+    async createOrUpdate(telegramId, info = {}) {
       create.run(
         telegramId,
         info.username || null,
@@ -53,7 +53,7 @@ const createUserModel = (db) => {
      * @param {number} telegramId - Telegram user ID
      * @returns {boolean} Success status
      */
-    grantAccess(telegramId) {
+    async grantAccess(telegramId) {
       const result = grantAccess.run(telegramId);
       return result.changes > 0;
     },
@@ -62,7 +62,7 @@ const createUserModel = (db) => {
      * Gets all users
      * @returns {Array} Array of users
      */
-    getAll() {
+    async getAll() {
       return getAll.all();
     },
 
@@ -70,7 +70,7 @@ const createUserModel = (db) => {
      * Gets total user count
      * @returns {number} Total count
      */
-    getCount() {
+    async getCount() {
       return getCount.get().count;
     },
 
@@ -78,7 +78,7 @@ const createUserModel = (db) => {
      * Gets count of users with access
      * @returns {number} Count of users with access
      */
-    getAccessedCount() {
+    async getAccessedCount() {
       return getAccessedCount.get().count;
     },
   };

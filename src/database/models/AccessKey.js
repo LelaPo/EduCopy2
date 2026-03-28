@@ -26,7 +26,7 @@ const createAccessKeyModel = (db) => {
      * Generates a new unique access key
      * @returns {string} Generated key
      */
-    generate() {
+    async generate() {
       const key = uuidv4().replace(/-/g, '').substring(0, 12).toUpperCase();
       create.run(key);
       return key;
@@ -37,7 +37,7 @@ const createAccessKeyModel = (db) => {
      * @param {string} key - Key value
      * @returns {Object|null} Key object or null
      */
-    findByKey(key) {
+    async findByKey(key) {
       return findByKey.get(key);
     },
 
@@ -47,8 +47,8 @@ const createAccessKeyModel = (db) => {
      * @param {number} telegramId - Telegram user ID
      * @returns {Object|null} Key object if valid, null if invalid/used
      */
-    validateAndUse(key, telegramId) {
-      const existing = this.findByKey(key);
+    async validateAndUse(key, telegramId) {
+      const existing = await this.findByKey(key);
       if (!existing || existing.is_used) {
         return null;
       }
@@ -60,7 +60,7 @@ const createAccessKeyModel = (db) => {
      * Gets all access keys
      * @returns {Array} Array of keys
      */
-    getAll() {
+    async getAll() {
       return getAll.all();
     },
 
@@ -68,7 +68,7 @@ const createAccessKeyModel = (db) => {
      * Gets count of unused keys
      * @returns {number} Count of unused keys
      */
-    getUnusedCount() {
+    async getUnusedCount() {
       return getUnusedCount.get().count;
     },
 
@@ -76,7 +76,7 @@ const createAccessKeyModel = (db) => {
      * Gets count of used keys
      * @returns {number} Count of used keys
      */
-    getUsedCount() {
+    async getUsedCount() {
       return getUsedCount.get().count;
     },
 
@@ -85,7 +85,7 @@ const createAccessKeyModel = (db) => {
      * @param {string} key - Key to delete
      * @returns {boolean} Success status
      */
-    delete(key) {
+    async delete(key) {
       const result = deleteKey.run(key);
       return result.changes > 0;
     },

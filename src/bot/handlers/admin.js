@@ -15,14 +15,15 @@ const createAdminHandlers = (models, adminId) => {
    */
   const adminCommandHandler = async (ctx) => {
     if (ctx.from?.id !== adminId) {
-      return ctx.reply('⛔ Admin access required.');
+      await ctx.reply('⛔ Admin access required.');
+      return;
     }
 
     const stats = {
-      totalUsers: User.getCount(),
-      usersWithAccess: User.getAccessedCount(),
-      unusedKeys: AccessKey.getUnusedCount(),
-      usedKeys: AccessKey.getUsedCount(),
+      totalUsers: await User.getCount(),
+      usersWithAccess: await User.getAccessedCount(),
+      unusedKeys: await AccessKey.getUnusedCount(),
+      usedKeys: await AccessKey.getUsedCount(),
     };
 
     const adminText = `👨‍💼 <b>Admin Panel</b>
@@ -52,7 +53,7 @@ Use the buttons below to manage access keys and view users.`;
       return;
     }
 
-    const newKey = AccessKey.generate();
+    const newKey = await AccessKey.generate();
 
     await ctx.reply(
       `✅ <b>Access Key Generated</b>\n\n` +
@@ -76,10 +77,10 @@ Use the buttons below to manage access keys and view users.`;
       return;
     }
 
-    const totalUsers = User.getCount();
-    const usersWithAccess = User.getAccessedCount();
-    const unusedKeys = AccessKey.getUnusedCount();
-    const usedKeys = AccessKey.getUsedCount();
+    const totalUsers = await User.getCount();
+    const usersWithAccess = await User.getAccessedCount();
+    const unusedKeys = await AccessKey.getUnusedCount();
+    const usedKeys = await AccessKey.getUsedCount();
 
     const statsText = `📊 <b>Detailed Statistics</b>
 
@@ -112,7 +113,7 @@ ${totalUsers > 0 ? Math.round((usersWithAccess / totalUsers) * 100) : 0}% of use
       return;
     }
 
-    const users = User.getAll();
+    const users = await User.getAll();
 
     if (users.length === 0) {
       await ctx.reply('👥 No users registered yet.');
