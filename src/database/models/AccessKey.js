@@ -53,7 +53,7 @@ const createAccessKeyModel = (db) => {
         return null;
       }
       markAsUsed.run(telegramId, key);
-      return this.findByKey(key);
+      return await this.findByKey(key);
     },
 
     /**

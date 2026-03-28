@@ -45,7 +45,7 @@ const createUserModel = (db) => {
         info.first_name || null,
         info.last_name || null
       );
-      return this.findById(telegramId);
+      return await this.findById(telegramId);
     },
 
     /**

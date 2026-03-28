@@ -75,11 +75,12 @@ const createBot = ({ config, models, apiClient, logger }) => {
         username: ctx?.from?.username,
         chat_id: ctx?.chat?.id,
         update_type: ctx?.updateType,
+        full_error: err,
       },
       'Bot error'
     );
     if (ctx?.reply) {
-      ctx.reply('❌ An error occurred. Please try again later.');
+      ctx.reply('❌ An error occurred. Please try again later.').catch(() => {});
     }
   });
 
