@@ -19,15 +19,18 @@ const createStartHandler = (models, adminId) => {
     if (!telegramId) return;
 
     try {
+      console.log('[startHandler] Creating/updating user...', telegramId);
       // Register or update user
       const user = await User.createOrUpdate(telegramId, {
         username: ctx.from.username,
         first_name: ctx.from.first_name,
         last_name: ctx.from.last_name,
       });
+      console.log('[startHandler] User result:', user);
 
       const isAdmin = telegramId === adminId;
       const hasAccess = user?.has_access || isAdmin;
+      console.log('[startHandler] isAdmin:', isAdmin, 'hasAccess:', hasAccess);
 
       const welcomeMessage = isAdmin
         ? `👋 <b>Welcome, Admin!</b>\n\nYou have full access to all features.`
@@ -35,11 +38,14 @@ const createStartHandler = (models, adminId) => {
         ? `👋 <b>Welcome!</b>\n\nYour access is confirmed. You can now use all features.`
         : `👋 <b>Welcome!</b>\n\n⚠️ You need an access key to use this bot. Use /key command to enter your key.`;
 
+      console.log('[startHandler] Sending reply...');
       await ctx.reply(welcomeMessage, {
         parse_mode: 'HTML',
         reply_markup: createMainMenu().reply_markup,
       });
+      console.log('[startHandler] Reply sent successfully');
     } catch (error) {
+      console.error('[startHandler] Error:', error);
       // Re-throw to be caught by bot.catch
       throw new Error(`Database error in startHandler: ${error.message}`);
     }
