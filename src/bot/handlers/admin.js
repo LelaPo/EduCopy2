@@ -39,7 +39,7 @@ Use the buttons below to manage access keys and view users.`;
 
     await ctx.reply(adminText, {
       parse_mode: 'HTML',
-      reply_markup: createAdminMenu().reply_markup,
+      ...createAdminMenu(),
     });
   };
 
@@ -62,7 +62,7 @@ Use the buttons below to manage access keys and view users.`;
         `⚠️ This key can only be used once.`,
       {
         parse_mode: 'HTML',
-        reply_markup: createKeyGeneratedKeyboard(newKey).reply_markup,
+        ...createKeyGeneratedKeyboard(newKey),
       }
     );
   };
@@ -99,7 +99,7 @@ ${totalUsers > 0 ? Math.round((usersWithAccess / totalUsers) * 100) : 0}% of use
 
     await ctx.reply(statsText, {
       parse_mode: 'HTML',
-      reply_markup: createAdminMenu().reply_markup,
+      ...createAdminMenu(),
     });
   };
 
@@ -138,7 +138,7 @@ ${totalUsers > 0 ? Math.round((usersWithAccess / totalUsers) * 100) : 0}% of use
 
     await ctx.reply(usersText, {
       parse_mode: 'HTML',
-      reply_markup: createAdminMenu().reply_markup,
+      ...createAdminMenu(),
     });
   };
 

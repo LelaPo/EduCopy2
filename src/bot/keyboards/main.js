@@ -1,95 +1,101 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const { InlineKeyboard } = require('telegraf');
+const { Markup } = require('telegraf');
 
 /**
  * Creates the main menu keyboard
- * @returns {InlineKeyboard} Main menu inline keyboard
+ * @returns {Object} Main menu inline keyboard
  */
 export const createMainMenu = () => {
-  return new InlineKeyboard()
-    .text('📚 Homework', 'menu_homework')
-    .text('📅 Schedule', 'menu_schedule')
-    .row()
-    .text('📊 My Stats', 'menu_stats')
-    .text('ℹ️ Help', 'menu_help');
+  return Markup.inlineKeyboard([
+    [Markup.button.callback('📚 Homework', 'menu_homework')],
+    [Markup.button.callback('📅 Schedule', 'menu_schedule')],
+    [Markup.button.callback('📊 My Stats', 'menu_stats')],
+    [Markup.button.callback('ℹ️ Help', 'menu_help')],
+  ]);
 };
 
 /**
  * Creates the admin menu keyboard
- * @returns {InlineKeyboard} Admin menu inline keyboard
+ * @returns {Object} Admin menu inline keyboard
  */
 export const createAdminMenu = () => {
-  return new InlineKeyboard()
-    .text('🔑 Generate Key', 'admin_generate_key')
-    .text('📊 Statistics', 'admin_stats')
-    .row()
-    .text('👥 Users', 'admin_users')
-    .text('🔙 Back', 'admin_back');
+  return Markup.inlineKeyboard([
+    [Markup.button.callback('🔑 Generate Key', 'admin_generate_key')],
+    [Markup.button.callback('📊 Statistics', 'admin_stats')],
+    [Markup.button.callback('👥 Users', 'admin_users'), Markup.button.callback('🔙 Back', 'admin_back')],
+  ]);
 };
 
 /**
  * Creates a keyboard for date range selection
- * @returns {InlineKeyboard} Date selection keyboard
+ * @returns {Object} Date selection keyboard
  */
 export const createDateSelectionKeyboard = () => {
-  return new InlineKeyboard()
-    .text('📅 Today', 'date_today')
-    .text('📅 Tomorrow', 'date_tomorrow')
-    .row()
-    .text('📆 This Week', 'date_week')
-    .text('📆 Next Week', 'date_next_week')
-    .row()
-    .text('🔙 Back', 'date_back');
+  return Markup.inlineKeyboard([
+    [Markup.button.callback('📅 Today', 'date_today'), Markup.button.callback('📅 Tomorrow', 'date_tomorrow')],
+    [Markup.button.callback('📆 This Week', 'date_week'), Markup.button.callback('📆 Next Week', 'date_next_week')],
+    [Markup.button.callback('🔙 Back', 'date_back')],
+  ]);
 };
 
 /**
  * Creates a keyboard with subject filters
  * @param {Array<string>} subjects - List of subjects
  * @param {string} selectedSubject - Currently selected subject
- * @returns {InlineKeyboard} Subject filter keyboard
+ * @returns {Object} Subject filter keyboard
  */
 export const createSubjectFilterKeyboard = (subjects, selectedSubject = null) => {
-  const keyboard = new InlineKeyboard();
+  const buttons = [];
 
   for (const subject of subjects) {
     const prefix = selectedSubject === subject ? '✅ ' : '▫️ ';
-    keyboard.text(`${prefix}${subject}`, `subject_filter_${subject}`);
+    buttons.push(Markup.button.callback(`${prefix}${subject}`, `subject_filter_${subject}`));
   }
 
-  keyboard.row();
-  keyboard.text('🗑️ Clear Filter', 'subject_clear');
-  keyboard.text('🔙 Back', 'subject_back');
+  // Create rows of 2 buttons each
+  const keyboard = [];
+  for (let i = 0; i < buttons.length; i += 2) {
+    keyboard.push(buttons.slice(i, i + 2));
+  }
 
-  return keyboard;
+  keyboard.push([
+    Markup.button.callback('🗑️ Clear Filter', 'subject_clear'),
+    Markup.button.callback('🔙 Back', 'subject_back'),
+  ]);
+
+  return Markup.inlineKeyboard(keyboard);
 };
 
 /**
  * Creates a keyboard for custom date range input
- * @returns {InlineKeyboard} Custom date keyboard
+ * @returns {Object} Custom date keyboard
  */
 export const createCustomDateKeyboard = () => {
-  return new InlineKeyboard().text('🔙 Back', 'custom_date_back');
+  return Markup.inlineKeyboard([
+    [Markup.button.callback('🔙 Back', 'custom_date_back')],
+  ]);
 };
 
 /**
  * Creates a confirmation keyboard for key generation
  * @param {string} key - Generated key
- * @returns {InlineKeyboard} Confirmation keyboard
+ * @returns {Object} Confirmation keyboard
  */
 export const createKeyGeneratedKeyboard = (key) => {
-  return new InlineKeyboard()
-    .text('🔑 Generate Another', 'admin_generate_key')
-    .row()
-    .text('📋 Copy Key', `copy_key_${key}`)
-    .text('🔙 Back', 'admin_back');
+  return Markup.inlineKeyboard([
+    [Markup.button.callback('🔑 Generate Another', 'admin_generate_key')],
+    [Markup.button.callback('📋 Copy Key', `copy_key_${key}`), Markup.button.callback('🔙 Back', 'admin_back')],
+  ]);
 };
 
 /**
  * Creates a back button keyboard
  * @param {string} callback - Callback data for back button
- * @returns {InlineKeyboard} Back keyboard
+ * @returns {Object} Back keyboard
  */
 export const createBackKeyboard = (callback = 'menu_back') => {
-  return new InlineKeyboard().text('🔙 Back', callback);
+  return Markup.inlineKeyboard([
+    [Markup.button.callback('🔙 Back', callback)],
+  ]);
 };

@@ -26,7 +26,7 @@ const createHomeworkHandlers = (apiClient, models, adminId) => {
         'Select a date range to view homework:',
       {
         parse_mode: 'HTML',
-        reply_markup: createDateSelectionKeyboard().reply_markup,
+        ...createDateSelectionKeyboard(),
       }
     );
   };
@@ -133,7 +133,7 @@ const createHomeworkHandlers = (apiClient, models, adminId) => {
             `Select a different date range to view homework.`,
           {
             parse_mode: 'HTML',
-            reply_markup: createDateSelectionKeyboard().reply_markup,
+            ...createDateSelectionKeyboard(),
           }
         );
         return;
@@ -153,7 +153,7 @@ const createHomeworkHandlers = (apiClient, models, adminId) => {
           formatHomeworkList(homeworks, filterSubject),
         {
           parse_mode: 'HTML',
-          reply_markup: createSubjectFilterKeyboard(subjects, filterSubject).reply_markup,
+          ...createSubjectFilterKeyboard(subjects, filterSubject),
         }
       );
     } catch (error) {
@@ -164,7 +164,7 @@ const createHomeworkHandlers = (apiClient, models, adminId) => {
           `Error: ${error.message}`,
         {
           parse_mode: 'HTML',
-          reply_markup: createDateSelectionKeyboard().reply_markup,
+          ...createDateSelectionKeyboard(),
         }
       );
     }

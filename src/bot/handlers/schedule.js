@@ -22,7 +22,7 @@ const createScheduleHandlers = (apiClient, models) => {
         'Select a date range to view the class schedule:',
       {
         parse_mode: 'HTML',
-        reply_markup: createDateSelectionKeyboard().reply_markup,
+        ...createDateSelectionKeyboard(),
       }
     );
   };
@@ -101,7 +101,7 @@ const createScheduleHandlers = (apiClient, models) => {
             `Select a different date range to view the schedule.`,
           {
             parse_mode: 'HTML',
-            reply_markup: createDateSelectionKeyboard().reply_markup,
+            ...createDateSelectionKeyboard(),
           }
         );
         return;
@@ -112,7 +112,7 @@ const createScheduleHandlers = (apiClient, models) => {
           formatScheduleList(schedule),
         {
           parse_mode: 'HTML',
-          reply_markup: createDateSelectionKeyboard().reply_markup,
+          ...createDateSelectionKeyboard(),
         }
       );
     } catch (error) {
@@ -123,7 +123,7 @@ const createScheduleHandlers = (apiClient, models) => {
           `Error: ${error.message}`,
         {
           parse_mode: 'HTML',
-          reply_markup: createDateSelectionKeyboard().reply_markup,
+          ...createDateSelectionKeyboard(),
         }
       );
     }
